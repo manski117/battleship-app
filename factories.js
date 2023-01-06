@@ -7,7 +7,7 @@ let ShipLengths = {
 }
 
 //ships
-const Ships = (type) => {
+const Ship = (type) => {
     //property vars
     const shipType = type;
     const length = ShipLengths[type];
@@ -61,4 +61,4 @@ function subtract4(a, b) {
 
 
 //////Test export line/////
-module.exports = {sum4, subtract4, Ships};
+module.exports = {sum4, subtract4, Ship};

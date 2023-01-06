@@ -1,4 +1,4 @@
-const {sum4, subtract4, Ships} = require('./factories');
+const {sum4, subtract4, Ship} = require('./factories');
 // import {sum, subtract, compileAndroidCode} from './main';
 // import sum from './main';
 // import subtract from './main';
@@ -12,7 +12,7 @@ test('adds 10 - 6 to equal 4', () => {
 });
 
 
-let testShip = Ships('destroyer');
+let testShip = Ship('destroyer');
 test('length property', () => {
     
     expect(testShip.length).toBe(2);
