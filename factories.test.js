@@ -16,7 +16,7 @@ test('adds 10 - 6 to equal 4', () => {
 
 
 
-describe.skip('Ship factory function tests', () => {
+describe('Ship factory function tests', () => {
 
 
     describe('Ship factory properties', () => {
@@ -73,6 +73,11 @@ describe.skip('Ship factory function tests', () => {
             testShip.hit();
             expect(testShip.isSunk()).toBe(true);
         });
+        test('changeDirection fucntion', () => {
+            let testShip = Ship('destroyer');
+            testShip.changeDirection()
+            expect(testShip.getDirection()).toBe('horizontal');
+        });
 
         
 
@@ -111,37 +116,125 @@ describe('GameBoard factory function tests', () => {
 
     });
 
-    describe('Place ship horizontal', () => {
+    describe.skip('Place ship horizontal', () => {
         let testBoard = Gameboard();
+        let testShip = Ship('carrier');
+        testShip.changeDirection();
         
        //test if a ships indexes are at the expected places when placed horz
-       test('place ship at first square', () =>{
-        let testShip = Ship('carrier');
-        testBoard.palceShip(testShip, 0, 0);
-        let testValue = testBoard.getBoard()[0][0].shipName;
+       test('place ship type at first square', () =>{
+        testBoard.placeShip(testShip, 0, 0);
+        let testValue = testBoard.getBoard()[0][0]['ship'];
         expect(testValue).toBe('carrier');
 
        });
 
        test('place ship index at first square', () =>{
-        let testShip = Ship('carrier');
-        testBoard.palceShip(testShip, 0, 0);
-        let testValue = testBoard.getBoard()[0][0].shipIdex = 0;
+        
+        testBoard.placeShip(testShip, 0, 0);
+        let testValue = testBoard.getBoard()[0][0]['index'];
         expect(testValue).toEqual(0);
+
+       });
+
+       test('place ship type at next square horizontal', () =>{
+        
+        testBoard.placeShip(testShip, 0, 0);
+        let testValue = testBoard.getBoard()[0][1]['ship'];
+        expect(testValue).toBe('carrier');
+
+       });
+
+       test('place ship index at next square horizontal', () =>{
+        
+        testBoard.placeShip(testShip, 0, 0);
+        let testValue = testBoard.getBoard()[0][1]['index'];
+        expect(testValue).toEqual(1);
 
        });
 
     });
 
-    describe('Place ship vertical', () => {
+    describe.skip('Place ship vertical', () => {
         
         //test if a ships indexes are at the expected places when placed vert
+        let testBoard = Gameboard();
+        let testShip = Ship('carrier');
+        
+       //test if a ships indexes are at the expected places when placed horz
+       test('place ship type at first square', () =>{
+        testBoard.placeShip(testShip, 0, 0);
+        let testValue = testBoard.getBoard()[0][0]['ship'];
+        expect(testValue).toBe('carrier');
+
+       });
+
+       test('place ship index at first square', () =>{
+        
+        testBoard.placeShip(testShip, 0, 0);
+        let testValue = testBoard.getBoard()[0][0]['index'];
+        expect(testValue).toEqual(0);
+
+       });
+
+       test('place ship type at next square horizontal', () =>{
+        
+        testBoard.placeShip(testShip, 0, 0);
+        let testValue = testBoard.getBoard()[1][0]['ship'];
+        expect(testValue).toBe('carrier');
+
+       });
+
+       test('place ship index at next square horizontal', () =>{
+        
+        testBoard.placeShip(testShip, 0, 0);
+        let testValue = testBoard.getBoard()[1][0]['index'];
+        expect(testValue).toEqual(1);
+
+       });
  
     });
 
     describe('Do NOT place ship out-of-bounds', () => {
-        
+        let testBoard = Gameboard();
+        let testShip = Ship('carrier');
         //test vert and horz
+        test('cannot place ship in space that does not exist', ()=>{
+            let testValue = testBoard.validSpace(12,11, 'vertical', testShip.length);
+            expect(testValue).toBe(false);
+        });
+
+        test.skip('ship cannot run vertically off board', ()=>{
+            let testValue = testBoard.validSpace(9,9, 'vertical');
+            expect(testValue).toBe(false);
+        })
+
+        test.skip('ship cannot run horizontally off board', ()=>{
+            let testValue = testBoard.validSpace(0,9, 'horizontal');
+            expect(testValue).toBe(false);
+        })
+
+        test('ship cannot be placed on another ship', ()=>{
+            testBoard.placeShip(testShip,0,0);
+            let testValue = testBoard.validSpace(0,0, 'vertical');
+            expect(testValue).toBe(false);
+        });
+
+        test.skip('ship cannot run vertically into another ship', ()=>{
+            testBoard.placeShip(testShip,0,2);
+            let testValue = testBoard.validSpace(0,0, 'vertical');
+            expect(testValue).toBe(false);
+        });
+
+        test.skip('ship cannot run horizontally into another ship', ()=>{
+            testBoard.placeShip(testShip,2,0);
+            let testValue = testBoard.validSpace(0,0, 'horizontal');
+            expect(testValue).toBe(false);
+        });
+
+        
+
+
  
     });
 

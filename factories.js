@@ -28,14 +28,11 @@ const Ship = (type) => {
         return direction;
     }
 
-    function changeDirection(){
-        if (direction === 'vertical'){
-            direction = 'horizontal'
-        }
-        if (direction === 'horizontal'){
-            direction = 'vertical'
-        }
-    }
+    const changeDirection = () => {
+        direction === 'horizontal'
+          ? (direction = 'vertical')
+          : (direction = 'horizontal');
+    };
 
     function hit(){
         //increases timesHit
@@ -66,7 +63,7 @@ const Ship = (type) => {
     
 
     //return line
-    return {shipType, length, direction, hit, isSunk, getTimesHit, getSunk, sinkShip, getDirection, changeDirection};
+    return {shipType, length, hit, isSunk, getTimesHit, getSunk, sinkShip, getDirection, changeDirection};
 };
 
 
@@ -84,7 +81,7 @@ const Gameboard = (arg) => {
         return board;
     }
 
-    function placeShip(shipObj, x, y){
+    function placeShip(shipObj, xStart, yStart){
         //takes a ship object, the row coordinate number, and the column coordinate number
         let name = shipObj.shipType;
         let direction = shipObj.getDirection();
@@ -92,17 +89,44 @@ const Gameboard = (arg) => {
 
         //check if placement is valid
         if (validSpace()){
-            //places them at specific coordinates
-            //get the ship type 
-            board[y][x] = {ship.shipType, }
+            let x = xStart;
+            let y = yStart;
+            for(let i = 0; i < shipObj.length; i++){
+                
+                //places them at specific coordinates 
+                board[y][x] = {'ship': name, 'index': i}
+                //direction of ship will place index in different direction
+                if (direction === 'vertical'){
+                    y++;
+                } else if (direction === 'horizontal'){
+                    x++;
+                }
+            }
 
+        } else {
+            console.error('invalid space');
         }
             
 
         //if not throw error or try/catch
     }
 
-    function validSpace(x =0, y = 0, direction = 'vertical'){
+    function validSpace(x =0, y = 0, direction = 'vertical', shipSize = 5){
+        //is the starting space itself valid?
+        if(x > 9 || y > 9){
+            return false;
+        }
+        if((board[y][x]) !== null){
+            return false;
+        }
+        for(let i = 0; i < shipSize; i++){
+            //increment as you walk the path down or right
+            //if there is a ship or you go off the board, break loop and return false. 
+        }
+
+        
+        
+        
         return true;
     }
 
@@ -123,7 +147,7 @@ const Gameboard = (arg) => {
         //if not, false
     }
   
-    return {getBoard};
+    return {getBoard, placeShip, validSpace};
 };
 
 
