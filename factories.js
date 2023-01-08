@@ -111,7 +111,7 @@ const Gameboard = (arg) => {
         //if not throw error or try/catch
     }
 
-    function validSpace(x =0, y = 0, direction = 'vertical', shipSize = 5){
+    function validSpace(x = 0, y = 0, direction = 'vertical', shipSize = 5){
         //is the starting space itself valid?
         if(x > 9 || y > 9){
             return false;
@@ -119,14 +119,27 @@ const Gameboard = (arg) => {
         if((board[y][x]) !== null){
             return false;
         }
+        let yLoop = y;
+        let xLoop = x;
         for(let i = 0; i < shipSize; i++){
             //increment as you walk the path down or right
+            let nextSpaceDown = i + yLoop;//9
+            let nextSpaceOver = i + xLoop;//0
             //if there is a ship or you go off the board, break loop and return false. 
+            if (((nextSpaceDown > 9) && direction === 'vertical') || (board[nextSpaceDown][x] !== null)){
+                
+                return false;
+
+            } else if (((nextSpaceOver > 9) && direction === 'horizontal') || (board[y][nextSpaceOver] !== null) ){
+                
+                return false;
+            }
+            
+            
+            continue;
+
         }
 
-        
-        
-        
         return true;
     }
 

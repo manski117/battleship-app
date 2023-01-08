@@ -195,7 +195,7 @@ describe('GameBoard factory function tests', () => {
  
     });
 
-    describe('Do NOT place ship out-of-bounds', () => {
+    describe('Do NOT place ship out-of-bounds or over another ship', () => {
         let testBoard = Gameboard();
         let testShip = Ship('carrier');
         //test vert and horz
@@ -204,13 +204,13 @@ describe('GameBoard factory function tests', () => {
             expect(testValue).toBe(false);
         });
 
-        test.skip('ship cannot run vertically off board', ()=>{
-            let testValue = testBoard.validSpace(9,9, 'vertical');
+        test('ship cannot run vertically off board', ()=>{
+            let testValue = testBoard.validSpace(0,8, 'vertical');
             expect(testValue).toBe(false);
         })
 
-        test.skip('ship cannot run horizontally off board', ()=>{
-            let testValue = testBoard.validSpace(0,9, 'horizontal');
+        test('ship cannot run horizontally off board', ()=>{
+            let testValue = testBoard.validSpace(8,0, 'horizontal');
             expect(testValue).toBe(false);
         })
 
@@ -220,13 +220,13 @@ describe('GameBoard factory function tests', () => {
             expect(testValue).toBe(false);
         });
 
-        test.skip('ship cannot run vertically into another ship', ()=>{
+        test('ship cannot run vertically into another ship', ()=>{
             testBoard.placeShip(testShip,0,2);
             let testValue = testBoard.validSpace(0,0, 'vertical');
             expect(testValue).toBe(false);
         });
 
-        test.skip('ship cannot run horizontally into another ship', ()=>{
+        test('ship cannot run horizontally into another ship', ()=>{
             testBoard.placeShip(testShip,2,0);
             let testValue = testBoard.validSpace(0,0, 'horizontal');
             expect(testValue).toBe(false);
@@ -235,12 +235,6 @@ describe('GameBoard factory function tests', () => {
         
 
 
- 
-    });
-
-    describe('Do NOT make ship collide with another ship', () => {
-        
-        //test vert and horz
  
     });
 
