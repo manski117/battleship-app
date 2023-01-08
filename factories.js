@@ -84,9 +84,48 @@ const Gameboard = (arg) => {
     //map takes the 10 null elements and turns them into 10 arrays of null elements. 
     let board = Array(10).fill(null).map(() => Array(10).fill(null));
 
+    //make variables to store a record of hits
+    let hits = [];
+    let misses = [];
+    let allAttackedSpaces = [];
+
+    
+    
+
+    //public methods:
+
+    const searchArrayForCoords = (array, x, y) =>{
+        let found = false;
+        array.forEach(element => {
+            
+            if ((element[0] === x) && (element[1] === y)){
+                //return true if you find the xy coords
+                found = true;
+            } 
+        });
+        
+
+        return found;
+    }
+
+    //getters
+    const getHits = () =>{
+        return hits;
+    }
+
+    const getMisses = () =>{
+        return misses;
+    }
+
+    const getAllAttackedSpaces = () =>{
+        return allAttackedSpaces;
+    }
+
     function getBoard(){
         return board;
     }
+
+    
 
     function placeShip(shipObj, xStart, yStart){
         //takes a ship object, the row coordinate number, and the column coordinate number
@@ -101,7 +140,7 @@ const Gameboard = (arg) => {
             for(let i = 0; i < shipObj.length; i++){
                 
                 //places them at specific coordinates 
-                board[y][x] = {'ship': name, 'index': i}
+                board[y][x] = {'ship': name, 'index': i, 'status': 'o'}
                 //direction of ship will place index in different direction
                 if (direction === 'vertical'){
                     y++;
@@ -117,6 +156,8 @@ const Gameboard = (arg) => {
 
         //if not throw error or try/catch
     }
+
+    
 
     function validSpace(x = 0, y = 0, direction = 'vertical', shipSize = 5){
         //is the starting space itself valid?
@@ -150,7 +191,8 @@ const Gameboard = (arg) => {
         return true;
     }
 
-    function receiveAttack(coords){
+    function receiveAttack(x, y){
+
         //takes a pair of coordinates
         //determine if ship is there
             //send hit function to the correct ship
@@ -208,7 +250,7 @@ const Gameboard = (arg) => {
         //if not, false
     }
   
-    return {getBoard, placeShip, validSpace, allShipsPlaced};
+    return {getBoard, placeShip, validSpace, allShipsPlaced, getHits, getMisses, searchArrayForCoords};
 };
 
 

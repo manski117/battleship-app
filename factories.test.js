@@ -290,10 +290,31 @@ describe('GameBoard factory function tests', () => {
 
 
     describe('Recieve attack tests', () => {
+        let testBoard = Gameboard();
+        
         
         //test to see if ships get hit in the expected place
+        test('ship shot at index 2', ()=>{
+            let testShip = Ship('battleship');
+            testBoard.placeShip(testShip, 0, 0);
+            testShip.receiveAttack(0,2);
+            let arr = testShip.getHitMatrix();
+            let testValue = ((arr[0] === 'o') && (arr[1] === 'o') && (arr[2] === 'x'))
+            expect(testValue).toBe(true);
+        });
+        
+        
 
         //test record hits
+        test('does board remember we got a hit', ()=>{
+            let testShip = Ship('battleship');
+            testBoard.placeShip(testShip, 0, 0);
+            testShip.receiveAttack(0,1);
+            let hitArr = testBoard.getHits();
+            let testValue = testBoard.searchArrayForCoords(hitArr, 0, 1);
+
+            expect(testValue).toBe(true);
+        });
 
         //test record misses
 
