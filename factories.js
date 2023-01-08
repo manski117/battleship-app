@@ -13,6 +13,7 @@ const Ship = (type) => {
     const length = ShipLengths[type];
     let direction = 'vertical';
     let timesHit = 0;
+    let hitMatrix = Array(length).fill('o');
     let sunk = false;
 
     //methods
@@ -28,15 +29,21 @@ const Ship = (type) => {
         return direction;
     }
 
+    const getHitMatrix = () =>{
+        return hitMatrix;
+    }
+
     const changeDirection = () => {
         direction === 'horizontal'
           ? (direction = 'vertical')
           : (direction = 'horizontal');
     };
 
-    function hit(){
+    function hit(i = 0){
+        //recieves number as arg that corresponds to index of ship damage
         //increases timesHit
         timesHit++;
+        hitMatrix[i] = 'x';
         console.log(timesHit);
         isSunk();
     }
@@ -63,7 +70,7 @@ const Ship = (type) => {
     
 
     //return line
-    return {shipType, length, hit, isSunk, getTimesHit, getSunk, sinkShip, getDirection, changeDirection};
+    return {shipType, length, hit, isSunk, getTimesHit, getSunk, sinkShip, getDirection, changeDirection, getHitMatrix};
 };
 
 
@@ -155,12 +162,53 @@ const Gameboard = (arg) => {
         //hits and misses should look different.
     }
 
-    function areAllShipSunk(){
+    function allShipsPlaced(){
+        let carrierPlaced = false;
+        let battleshipPlaced = false;
+        let cruiserPlaced = false;
+        let submarinePlaced = false;
+        let destroyerPlaced = false;
+
+        //loop through whole board. Return early if all found
+        for(let y = 0; y < 10; y++){
+            for(let x = 0; x < 10; x++){
+                if (board[y][x] === null){
+                    continue;
+                } else{
+                    let shipDetected = board[y][x];
+                    if (shipDetected === 'carrier'){
+                        carrierPlaced = true;
+                    }
+                    if (shipDetected === 'battleship'){
+                        battleshipPlaced = true;
+                    }
+                    if (shipDetected === 'cruiser'){
+                        cruiserPlaced = true;
+                    }
+                    if (shipDetected === 'submarine'){
+                        submarinePlaced = true;
+                    }
+                    if (shipDetected === 'destroyer'){
+                        destroyerPlaced = true;
+                    }
+                    if(carrierPlaced && battleshipPlaced && cruiserPlaced && submarinePlaced && destroyerPlaced){
+                        return true;
+                    }
+
+                }
+            }
+        }
+
+        return false;
+        //well, are they? 
+    }
+
+    function AllShipsSunk(){
         //if all ships are sunk, true
         //if not, false
     }
   
-    return {getBoard, placeShip, validSpace};
+    return {getBoard, placeShip, validSpace, allShipsPlaced};
 };
 
 

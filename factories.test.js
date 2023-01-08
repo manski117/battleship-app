@@ -39,6 +39,11 @@ describe('Ship factory function tests', () => {
             expect(testShip.getTimesHit()).toBe(0);
         });
 
+        test.only('hitMatrix getter', () =>{
+            let arr = testShip.getHitMatrix();
+            expect(arr).not.toContain('x');
+        })
+
         test('sunk property not sunk', () => {
             expect(testShip.getSunk()).toBe(false);
         });
@@ -78,6 +83,14 @@ describe('Ship factory function tests', () => {
             testShip.changeDirection()
             expect(testShip.getDirection()).toBe('horizontal');
         });
+
+        test.only('hitMatrix and hit method', () =>{
+            let testShip = Ship('destroyer');
+            testShip.hit(0);
+            let arr = testShip.getHitMatrix();
+            let testValue = ((arr[0] === 'x') && (arr[1] === 'o'));
+            expect(testValue).toBe(true);
+        })
 
         
 
@@ -239,7 +252,38 @@ describe('GameBoard factory function tests', () => {
     });
 
     describe('All ships placed', () => {
-        
+        //make object instances of all 5 ships
+        let testBoard = Gameboard();
+        let carrier = Ship('carrier');
+        let battleship = Ship('battleship');
+        let cruiser = Ship('cruiser');
+        let submarine = Ship('submarine');
+        let destroyer = Ship('destroyer');
+
+        test('no ships placed', ()=>{
+            let testValue = testBoard.allShipsPlaced();
+            expect(testValue).toBe(false);
+        });
+
+        test('only some ships placed', ()=>{
+            testBoard.placeShip(carrier, 0,0, carrier.length);
+            testBoard.placeShip(battleship, 1,0, battleship.length);
+            testBoard.placeShip(cruiser, 3,0, cruiser.length);
+            let testValue = testBoard.allShipsPlaced();
+            expect(testValue).toBe(false);
+        });
+
+        test('all ships placed', ()=>{
+            testBoard.placeShip(carrier, 0,0, carrier.length);
+            testBoard.placeShip(battleship, 1,0, battleship.length);
+            testBoard.placeShip(cruiser, 3,0, cruiser.length);
+            testBoard.placeShip(submarine, 3,0, submarine.length);
+            testBoard.placeShip(destroyer, 3,0, destroyer.length);
+            let testValue = testBoard.allShipsPlaced();
+            expect(testValue).toBe(false);
+        });
+
+
         //test no ships, some ships, and all ships
  
     });
