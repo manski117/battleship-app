@@ -39,7 +39,7 @@ describe('Ship factory function tests', () => {
             expect(testShip.getTimesHit()).toBe(0);
         });
 
-        test.only('hitMatrix getter', () =>{
+        test('hitMatrix getter', () =>{
             let arr = testShip.getHitMatrix();
             expect(arr).not.toContain('x');
         })
@@ -84,7 +84,7 @@ describe('Ship factory function tests', () => {
             expect(testShip.getDirection()).toBe('horizontal');
         });
 
-        test.only('hitMatrix and hit method', () =>{
+        test('hitMatrix and hit method', () =>{
             let testShip = Ship('destroyer');
             testShip.hit(0);
             let arr = testShip.getHitMatrix();
@@ -129,7 +129,7 @@ describe('GameBoard factory function tests', () => {
 
     });
 
-    describe.skip('Place ship horizontal', () => {
+    describe('Place ship horizontal', () => {
         let testBoard = Gameboard();
         let testShip = Ship('carrier');
         testShip.changeDirection();
@@ -168,7 +168,7 @@ describe('GameBoard factory function tests', () => {
 
     });
 
-    describe.skip('Place ship vertical', () => {
+    describe('Place ship vertical', () => {
         
         //test if a ships indexes are at the expected places when placed vert
         let testBoard = Gameboard();
@@ -297,7 +297,7 @@ describe('GameBoard factory function tests', () => {
         test('ship shot at index 2', ()=>{
             let testShip = Ship('battleship');
             testBoard.placeShip(testShip, 0, 0);
-            testShip.receiveAttack(0,2);
+            testBoard.receiveAttack(0,2);
             let arr = testShip.getHitMatrix();
             let testValue = ((arr[0] === 'o') && (arr[1] === 'o') && (arr[2] === 'x'))
             expect(testValue).toBe(true);
@@ -309,7 +309,7 @@ describe('GameBoard factory function tests', () => {
         test('does board remember we got a hit', ()=>{
             let testShip = Ship('battleship');
             testBoard.placeShip(testShip, 0, 0);
-            testShip.receiveAttack(0,1);
+            testBoard.receiveAttack(0,1);
             let hitArr = testBoard.getHits();
             let testValue = testBoard.searchArrayForCoords(hitArr, 0, 1);
 
@@ -317,18 +317,60 @@ describe('GameBoard factory function tests', () => {
         });
 
         //test record misses
+        test('does board remember we got a miss?', ()=>{
+            let testShip = Ship('battleship');
+            testBoard.placeShip(testShip, 0, 0);
+            testBoard.receiveAttack(3,3);
+            let missArr = testBoard.getMisses();
+            let testValue = testBoard.searchArrayForCoords(missArr, 3, 3);
+
+            expect(testValue).toBe(true);
+        });
 
         //test targeting a space that has already been shot
+        test('do not target same spot twice', ()=>{
+            let testShip = Ship('battleship');
+            testBoard.placeShip(testShip, 0, 0);
+            testBoard.receiveAttack(3,3);
+            testBoard.receiveAttack(3,4);
+            testBoard.receiveAttack(3,5);
+            
+
+            expect(testBoard.receiveAttack(3,5)).toBe(false);
+        });
  
     });
 
     describe('All ships sunk', () => {
-        
-        //test no ships, some ships, and all ships sunk
+    
+        test('only some ships are sunk', ()=>{
+            let testBoard = Gameboard();
+            let testShip = Ship('battleship');
+            let testShip2 = Ship('destroyer');
+            testBoard.placeShip(testShip, 0, 0);
+            testBoard.placeShip(testShip2, 5, 5);
+            testShip.sinkShip();
+            let testValue = testBoard.allShipsSunk();
+
+            expect(testValue).toBe(false);
+        });
+
+        test('all ships are sunk', ()=>{
+            let testBoard = Gameboard();
+            let testShip = Ship('battleship');
+            let testShip2 = Ship('destroyer');
+            testBoard.placeShip(testShip, 0, 0);
+            testBoard.placeShip(testShip2, 5, 5);
+            testShip.sinkShip();
+            testShip2.sinkShip();
+            let testValue = testBoard.allShipsSunk();
+
+            expect(testValue).toBe(true);
+        });
  
     });
 
-    describe('reset board', () => {
+    describe.skip('reset board', () => {
         
         //make a new board, run clear function, and see if things are empty as expected
  

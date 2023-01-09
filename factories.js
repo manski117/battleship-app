@@ -88,6 +88,7 @@ const Gameboard = (arg) => {
     let hits = [];
     let misses = [];
     let allAttackedSpaces = [];
+    let PlacedShipObjs = {}
 
     
     
@@ -107,6 +108,8 @@ const Gameboard = (arg) => {
 
         return found;
     }
+
+    
 
     //getters
     const getHits = () =>{
@@ -134,7 +137,7 @@ const Gameboard = (arg) => {
         //call the ship function to make ships
 
         //check if placement is valid
-        if (validSpace()){
+        if (validSpace(xStart, yStart, direction, shipObj.length)){
             let x = xStart;
             let y = yStart;
             for(let i = 0; i < shipObj.length; i++){
@@ -149,6 +152,8 @@ const Gameboard = (arg) => {
                 }
             }
 
+            PlacedShipObjs[`${name}`] = shipObj;
+
         } else {
             console.error('invalid space');
         }
@@ -162,9 +167,11 @@ const Gameboard = (arg) => {
     function validSpace(x = 0, y = 0, direction = 'vertical', shipSize = 5){
         //is the starting space itself valid?
         if(x > 9 || y > 9){
+            console.error('space does not exist on board');
             return false;
         }
         if((board[y][x]) !== null){
+            console.error('not an empty space');
             return false;
         }
         let yLoop = y;
@@ -175,11 +182,11 @@ const Gameboard = (arg) => {
             let nextSpaceOver = i + xLoop;//0
             //if there is a ship or you go off the board, break loop and return false. 
             if (((nextSpaceDown > 9) && direction === 'vertical') || (board[nextSpaceDown][x] !== null)){
-                
+                console.error('You either ran into a ship or off board vertically');
                 return false;
 
             } else if (((nextSpaceOver > 9) && direction === 'horizontal') || (board[y][nextSpaceOver] !== null) ){
-                
+                console.error('You either ran into a ship or off board horizontally');
                 return false;
             }
             
@@ -191,17 +198,82 @@ const Gameboard = (arg) => {
         return true;
     }
 
+    const recordShot = (x,y, hit = false) =>{
+        //evaluate hit
+        allAttackedSpaces.push([x,y]);
+
+        if (hit){
+             hits.push([x,y]);
+        } else if(!hit){
+            misses.push([x,y]);
+
+        }
+
+    }
+
     function receiveAttack(x, y){
 
         //takes a pair of coordinates
+        let target = board[y][x];
+
+        
         //determine if ship is there
-            //send hit function to the correct ship
-            //OR record coordinates of missed shots
+        if (target === null){
+            //attack miss case board[y][x] = {'ship': name, 'index': i, 'status': 'o'}
+            
+            //alert player that attack missed
+            displayHit(x,y, false);
+
+            //record negative coordinates
+            recordShot(x,y, false);
+
+
+            //record in that space that it was also missed in the past
+            board[y][x] = {'missed': true};
+
+        } else if(target !== null){
+            //attack hits case
+            if (target['missed'] === true) {
+                console.error('You cannot target the same space twice');
+                return false;
+            } 
+            
+            //get index from ship that was hit
+            let i = target['index']
+
+            //get ship type from ship that was hit
+            let ship = target['ship'];
+
+            //call intermediate function to call hit function and send it the right index
+            registerHitTo(ship, i);
+
+            //record coordinates to both the hits and total array variables
+            recordShot(x,y, true);
+
+            //alert player that hit was successfull (just call another pure function)
+            displayHit(x,y, true);
+
+            
+        }
+
+            
+    }
+
+    const registerHitTo = (shipType, index) =>{
+        //recieve ship type as string and index as number
+
+        //get object ref out of PlacedShipObjs using the string
+        let shipObj = PlacedShipObjs[`${shipType}`];
+
+        //call hit function
+        shipObj.hit(index);
     }
 
     function displayHit(coord){
         //takes a coord and displays on board where that shot was for player.
         //hits and misses should look different.
+        //this will eventually interact with the DOM
+        return true;
     }
 
     function allShipsPlaced(){
@@ -245,12 +317,26 @@ const Gameboard = (arg) => {
         //well, are they? 
     }
 
-    function AllShipsSunk(){
+    function allShipsSunk(){
+        let arr = Object.values(PlacedShipObjs);
+        let allSunk = true;
+        for(let i = 0; i < arr.length; i++){
+            let shipObj = arr[i];
+            let shipIsSunk = shipObj.getSunk();
+            if(shipIsSunk){
+                continue;
+            } else if (!shipIsSunk){
+                allSunk = false;
+                
+            }
+        }
+
+        return allSunk;
         //if all ships are sunk, true
         //if not, false
     }
   
-    return {getBoard, placeShip, validSpace, allShipsPlaced, getHits, getMisses, searchArrayForCoords};
+    return {getBoard, placeShip, validSpace, allShipsPlaced, getHits, getMisses, searchArrayForCoords, receiveAttack, allShipsSunk};
 };
 
 
